@@ -83,7 +83,7 @@ var makeTheSVG = function(){
 			.attr("x2", 1000)
 			.attr("y1", liney)
 			.attr("y2", liney)
-			.attr("stroke-width",3)
+			.attr("stroke-width",2)
 			.attr("stroke","black");
 
 		for(var i = 0; i < bars[motif]["width"].length; i++){
@@ -110,9 +110,14 @@ var makeTheSVG = function(){
 
 
 var exportTheSVG = function(){
-	var svg = document.getElementById("blocks_scroll");
-
-	var serializer = new XMLSerializer();
-	var source = serializer.serializeToString(svg);
-	console.log(source);
-}
+	var svg = document.getElementsByTagName("svg")[0].outerHTML;
+	var svgBlob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
+	console.log(svgBlob);
+	var svgUrl = URL.createObjectURL(svgBlob);
+	var downloadLink = document.createElement("a");
+	downloadLink.href = svgUrl;
+	downloadLink.download = "newesttree.svg";
+	document.body.appendChild(downloadLink);
+	downloadLink.click();
+	document.body.removeChild(downloadLink);
+};

@@ -2,7 +2,25 @@
 //rows[4].children[3]
 
 //this is for the mast output in particular
+
+//TO DO: Make the legend
+
+
 var makeTheSVG = function(){
+	//grabbing the legend information
+	var boxes = document.getElementsByClassName("legend_entry");
+	var items = [];
+	for(var i = 0; i < boxes.length/2; i++){
+		items.push(boxes[i]);
+	}
+	legend = {};
+	var name, color;
+	for(var i = 0; i < items.length; i++){
+		name = items[i].children[1].innerText;
+		color = items[i].children[0].style.backgroundColor;
+		legend[name] = color;
+	}
+
 	var names = document.getElementsByTagName("tbody");
 	var bodies = [].slice.call(names);
 	var bars = {};
@@ -11,13 +29,13 @@ var makeTheSVG = function(){
 		bodies.pop();
 	}
 	for(var item in bodies){
-		let body = bodies[item].children[0];
+		var body = bodies[item].children[0];
 
-		let name = body.children[0].innerText;
+		var name = body.children[0].innerText;
 
-		let startStop = [body.children[1].innerText, body.children[2].innerText];
+		var startStop = [body.children[1].innerText, body.children[2].innerText];
 
-		let pvalue = body.children[3].innerText;
+		var pvalue = body.children[3].innerText;
 
 		bars[name] = {"pvalue": pvalue};
 		bars[name]["startStop"] = startStop;
@@ -26,7 +44,7 @@ var makeTheSVG = function(){
 		bars[name]["height"] = [];
 		bars[name]["color"] = [];
 		bars[name]["pn"] = [];
-		let far = body.children[5].children[0].children;
+		var far = body.children[5].children[0].children;
 		console.log(far);
 		for(var x = 0; x < far.length; x++){
 			if((far[x].getAttribute("style") != null) && (far[x].getAttribute("class").includes("motif"))){
@@ -50,20 +68,50 @@ var makeTheSVG = function(){
 
 	}
 	console.dir(bars);
-	
+	var width = "1200px";
+	var height = "800px";
 
 
 	var body = d3.select("body").append("svg")
-								.attr("width", "1200px")
-								.attr("height", "700px")
+								.attr("width", width)
+								.attr("height", height)
 								.attr("background-color", "lightgrey");
 	var x = 0;
+	var y = 0;
+	var legLen = Object.keys(legend).length;
+	var xdist = 1200 / (legLen);
 
+	for(var item in legend){
+		console.log(item + " " + y);
+		y += 1;
+		console.log(x)
+		body.append("rect")
+			.attr("x", 100 + (xdist * y))
+			.attr("y", 750)
+			.attr("width", 20) 
+			.attr("height", 20)
+			.attr("fill", legend[item]);
+		if(y % 2 == 0){
+			body.append("text")
+				.attr("x", 80 + (xdist * y))
+				.attr("y", 740)
+				.attr("dy", ".35em")
+				.text(item);
+		}else{
+			body.append("text")
+				.attr("x", 80 + (xdist * y))
+				.attr("y", 780)
+				.attr("dy", ".35em")
+				.text(item);
+		}
+
+	}
+
+	var keys = Object.keys(bars).length;
 	for(var motif in bars){
-		var keys = Object.keys(bars).length;
+		
 		var liney = 10 + (x * (680/keys))
 		x += 1;
-		console.log(x);
 
 		body.append("text")
 			.attr("x", 5)
@@ -104,7 +152,7 @@ var makeTheSVG = function(){
 			.attr("stroke","black");
 
 		for(var i = 0; i < bars[motif]["width"].length; i++){
-			console.log(bars[motif]["width"][i]);
+
 			if(bars[motif]["pn"][i] == "+"){	
 				body.append("rect")
 					.attr("x", ((bars[motif]["left"][i])*8.5) + 280)

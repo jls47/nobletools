@@ -30,11 +30,11 @@
 			for(var x = 0; x < far.length; x++){
 				if((far[x].getAttribute("style") != null) && (far[x].getAttribute("class").includes("motif"))){
 					if(far[x].getAttribute("style").includes("rgb")){
-						bars[name]["width"].push(far[x].attributeStyleMap.get("width").value);
-						bars[name]["left"].push(far[x].attributeStyleMap.get("left").value);
-						bars[name]["height"].push(far[x].attributeStyleMap.get("height").value);
-						bars[name]["color"].push(far[x].style.backgroundColor);
-
+						var compStyles = far[x].style;
+						bars[name]["width"].push(parseInt(compStyles.width.slice(0, -1)));
+          				bars[name]["left"].push(parseInt(compStyles.left.slice(0, -1)));
+          				bars[name]["height"].push(parseInt(compStyles.height.slice(0, -2)));
+          				bars[name]["color"].push(compStyles.backgroundColor);
 					}
 				}
 			}
@@ -46,10 +46,14 @@
 		
 
 
-		var body = d3.select("body").append("svg")
-									.attr("width", "1200px")
-									.attr("height", "900px")
-									.attr("background-color", "lightgrey");
+		var height = Object.keys(bars).length * 30;
+
+  		var body = d3.select("body").append("svg")
+                .attr("width", "1000px")
+                .attr("height", height.toString())
+                .attr("background-color", "lightgrey")
+                .attr("xmlns", "http://www.w3.org/2000/svg");
+
 		var x = 0;
 
 		for(var motif in bars){
@@ -87,7 +91,7 @@
 				.attr("x2", 1200)
 				.attr("y1", liney)
 				.attr("y2", liney)
-				.attr("stroke-width",2)
+				.attr("stroke-width",1)
 				.attr("stroke","black");
 
 			for(var i = 0; i < bars[motif]["width"].length; i++){

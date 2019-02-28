@@ -25,7 +25,7 @@ var makeTheSVG = function(){
 	var bodies = [].slice.call(names);
 	var bars = {};
 	bodies.splice(0, 2);
-	for(var i=0; i<6; i++){
+	for(var i=0; i<5; i++){
 		bodies.pop();
 	}
 	for(var item in bodies){
@@ -55,10 +55,12 @@ var makeTheSVG = function(){
 					}else{
 						bars[name]["pn"].push("-");
 					}
-					bars[name]["width"].push(far[x].attributeStyleMap.get("width").value);
-					bars[name]["left"].push(far[x].attributeStyleMap.get("left").value);
-					bars[name]["height"].push(far[x].attributeStyleMap.get("height").value);
-					bars[name]["color"].push(far[x].style.backgroundColor);
+					var compStyles = far[x].style;
+
+					bars[name]["width"].push(parseInt(compStyles.width.slice(0, -1)));
+					bars[name]["left"].push(parseInt(compStyles.left.slice(0, -1)));
+					bars[name]["height"].push(parseInt(compStyles.height.slice(0, -2)));
+					bars[name]["color"].push(compStyles.backgroundColor);
 
 				}
 			}
@@ -69,13 +71,14 @@ var makeTheSVG = function(){
 	}
 	console.dir(bars);
 	var width = "1200px";
-	var height = "800px";
+	var height = (Object.keys(bars).length * 40) + 200;
 
+  	var body = d3.select("body").append("svg")
+            	.attr("width", "1000px")
+                .attr("height", height.toString())
+                .attr("background-color", "lightgrey")
+                .attr("xmlns", "http://www.w3.org/2000/svg");
 
-	var body = d3.select("body").append("svg")
-								.attr("width", width)
-								.attr("height", height)
-								.attr("background-color", "lightgrey");
 	var x = 0;
 	var y = 0;
 	var legLen = Object.keys(legend).length;
@@ -86,31 +89,33 @@ var makeTheSVG = function(){
 		y += 1;
 		console.log(x)
 		body.append("rect")
-			.attr("x", 100 + (xdist * y))
-			.attr("y", 750)
+			.attr("x", (xdist * (y * 0.75)))
+			.attr("y", height - 50)
 			.attr("width", 20) 
 			.attr("height", 20)
 			.attr("fill", legend[item]);
 		if(y % 2 == 0){
 			body.append("text")
-				.attr("x", 80 + (xdist * y))
-				.attr("y", 740)
+				.attr("x", (xdist * (y * 0.75)) - 20)
+				.attr("y", height - 20)
 				.attr("dy", ".35em")
 				.text(item);
 		}else{
 			body.append("text")
-				.attr("x", 80 + (xdist * y))
-				.attr("y", 780)
+				.attr("x", (xdist * (y * 0.75)) - 20)
+				.attr("y", height - 60)
 				.attr("dy", ".35em")
 				.text(item);
 		}
 
 	}
 
+
+
 	var keys = Object.keys(bars).length;
 	for(var motif in bars){
 		
-		var liney = 10 + (x * (680/keys))
+		var liney = 10 + (x * ((height-100)/keys))
 		x += 1;
 
 		body.append("text")
@@ -148,7 +153,7 @@ var makeTheSVG = function(){
 			.attr("x2", 1200)
 			.attr("y1", liney)
 			.attr("y2", liney)
-			.attr("stroke-width",3)
+			.attr("stroke-width",1)
 			.attr("stroke","black");
 
 		for(var i = 0; i < bars[motif]["width"].length; i++){

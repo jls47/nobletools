@@ -1,7 +1,3 @@
-//If I want to parse the CSS I need to add another layer on or parse the computed styles somehow.  Figure it out.
-//rows[4].children[3]
-
-//this is for the meme output in particular
 var makeTheSVG = function(){
   var names = document.getElementsByClassName("blockdiag_name");
   var bars = {};
@@ -107,15 +103,16 @@ var makeTheSVG = function(){
       }
     }
   }
-
-	var svg = document.getElementsByTagName("svg")[0].outerHTML;
-	var svgBlob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
-	console.log(svgBlob);
-	var svgUrl = URL.createObjectURL(svgBlob);
+  
+  var svg = document.getElementsByTagName("svg")[0].outerHTML;
+  var svgBlob = new Blob([svg], {type:"image/svg+xml;charset=utf-8"});
+  console.log(svgBlob);
+  var svgUrl = URL.createObjectURL(svgBlob);
   console.log(svgUrl);
-	var downloadLink = document.createElement("a");
-	downloadLink.href = svgUrl;
-	downloadLink.download = "newesttree.svg";
-  downloadLink.innerHTML = "Right Click => Save As";
-	document.getElementById("blocks_scroll").appendChild(downloadLink);
+  var downloadLink = document.createElement("a");
+  downloadLink.href = svgUrl;
+  downloadLink.download = "default.svg";
+  downloadLink.innerHTML = " Right Click => Save As";
+  document.getElementById("sites_sec").appendChild(downloadLink);
+  
 };

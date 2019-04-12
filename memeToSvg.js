@@ -43,6 +43,7 @@ var makeTheSVG = function(){
                 .attr("width", "1000px")
                 .attr("height", height.toString())
                 .attr("background-color", "lightgrey")
+                .attr("id", "memeSVG")
                 .attr("xmlns", "http://www.w3.org/2000/svg");
   var x = 0;
 
@@ -53,10 +54,10 @@ var makeTheSVG = function(){
     console.log(x);
 
     body.append("text")
-      .attr("x", 5)
+      .attr("x", 0)
       .attr("y", liney)
       .attr("dy", ".35em")
-      .text(motif);
+      .text(x + ". " + motif);
 
     body.append("text")
       .attr("x", 80)
@@ -71,7 +72,7 @@ var makeTheSVG = function(){
       .text("+");
 
     body.append("text")
-      .attr("x", 140)
+      .attr("x", 141)
       .attr("y", liney + 7)
       .attr("dy", ".35em")
       .text("-");
@@ -111,12 +112,11 @@ var makeTheSVG = function(){
   console.log(svgUrl);
   var downloadLink = document.createElement("a");
   downloadLink.href = svgUrl;
-  downloadLink.download = "default.svg";
+  downloadLink.download = "meme-motif-locations.svg";
   downloadLink.innerHTML = " Right Click => Save As";
   document.getElementById("sites_sec").appendChild(downloadLink);
-  var iframe = document.createElement("iframe");
-  iframe.src = downloadLink.href;
-  iframe.style.display = "none";
-  document.body.appendChild(iframe);
+  downloadLink.click();
+  downloadLink.remove();
+  document.getElementById("memeSVG").remove();
   
 };

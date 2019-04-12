@@ -13,6 +13,21 @@
 		for(var i=0; i<4; i++){
 			bodies.pop();
 		}
+
+		var boxes = document.getElementsByClassName("legend_entry");
+		var items = [];
+		for(var i = 0; i < boxes.length/2; i++){
+			items.push(boxes[i]);
+		}
+		legend = {};
+		var name, color;
+		for(var i = 0; i < items.length; i++){
+			name = items[i].children[1].innerText;
+			color = items[i].children[0].style.backgroundColor;
+			legend[name] = color;
+		}
+
+
 		for(var item in bodies){
 			var body = bodies[item].children[0];
 
@@ -26,7 +41,6 @@
 			bars[name]["height"] = [];
 			bars[name]["color"] = [];
 			var far = body.children[3].children[0].children;
-			console.log(far);
 			for(var x = 0; x < far.length; x++){
 				if((far[x].getAttribute("style") != null) && (far[x].getAttribute("class").includes("motif"))){
 					if(far[x].getAttribute("style").includes("rgb")){
@@ -38,23 +52,95 @@
 					}
 				}
 			}
-			console.log(name + ' ' + pvalue);
 
 
 		}
-		console.dir(bars);
+		var ticLine = document.getElementsByClassName("block_container")[0].children;
+		var ticItems = [].slice.call(ticLine);
+		var tics = {labels: {}, minor: [], major: []};
+
+		for(var item in ticItems){
+			if(ticItems[item].className == "tic_major"){
+				tics.major.push(parseFloat(ticItems[item].style.left.replace("%", "")) / 100);
+			}else if(ticItems[item].className == "tic_minor"){
+				tics.minor.push(parseFloat(ticItems[item].style.left.replace("%", "")) / 100);
+			}else{
+				tics.labels[ticItems[item].innerText] = parseFloat(ticItems[item].style.left.replace("%", "")) / 100;
+			}
+		}
+
+		console.dir(tics);
 		
 
 
 		var height = Object.keys(bars).length * 30;
 
-  		var body = d3.select("body").append("svg")
-                .attr("width", "1000px")
+  		var body = d3.select(".pad").append("svg")
+                .attr("width", "1200px")
                 .attr("height", height.toString())
                 .attr("background-color", "lightgrey")
                 .attr("xmlns", "http://www.w3.org/2000/svg");
 
 		var x = 0;
+
+
+		var y = 0;
+		var legLen = Object.keys(legend).length;
+		var xdist = 1300 / (legLen);
+
+		for(var tic in tics.labels){
+			body.append("text")
+				.attr("x", 145 + (980 * tics.labels[tic]))
+				.attr("y", height - 90)
+				.attr("dy", ".35em")
+				.text(tic);
+		}
+
+		for(var tic in tics.minor){
+			console.log(tics.minor[tic])
+			body.append("line")
+				.attr("x1", 150 + (980 * tics.minor[tic]))
+				.attr("x2", 150 + (980 * tics.minor[tic]))
+				.attr("y1", height - 100)
+				.attr("y2", height - 97)
+				.attr("stroke-width",0.5)
+				.attr("stroke", "black");
+
+		}
+
+		for(var tic in tics.major){
+			body.append("line")
+				.attr("x1", 150 + (980 * tics.major[tic]))
+				.attr("x2", 150 + (980 * tics.major[tic]))
+				.attr("y1", height - 105)
+				.attr("y2", height - 100)
+				.attr("stroke-width", 1)
+				.attr("stroke", "black");
+		}
+
+		for(var item in legend){
+			y += 1;
+			body.append("rect")
+				.attr("x", (xdist * (y * 0.75)))
+				.attr("y", height - 50)
+				.attr("width", 20) 
+				.attr("height", 20)
+				.attr("fill", legend[item]);
+			if(y % 2 == 0){
+				body.append("text")
+					.attr("x", (xdist * (y * 0.75)) - 100)
+					.attr("y", height - 20)
+					.attr("dy", ".35em")
+					.text(item);
+			}else{
+				body.append("text")
+					.attr("x", (xdist * (y * 0.75)) - 100)
+					.attr("y", height - 60)
+					.attr("dy", ".35em")
+					.text(item);
+			}
+
+		}
 
 		for(var motif in bars){
 			var keys = Object.keys(bars).length;

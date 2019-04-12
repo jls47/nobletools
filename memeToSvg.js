@@ -27,9 +27,9 @@ var makeTheSVG = function(){
             seqObj["pn"] = "-";
           }
           var compStyles = far[x].style;
-          seqObj["width"].push(parseInt(compStyles.width.slice(0, -1)));
-          seqObj["left"].push(parseInt(compStyles.left.slice(0, -1)));
-          seqObj["height"].push(parseInt(compStyles.height.slice(0, -2)));
+          seqObj["width"].push(parseFloat(compStyles.width.slice(0, -1)));
+          seqObj["left"].push(parseFloat(compStyles.left.slice(0, -1)));
+          seqObj["height"].push(parseFloat(compStyles.height.slice(0, -2)));
           seqObj["color"].push(compStyles.backgroundColor);
 
         }
@@ -114,5 +114,9 @@ var makeTheSVG = function(){
   downloadLink.download = "default.svg";
   downloadLink.innerHTML = " Right Click => Save As";
   document.getElementById("sites_sec").appendChild(downloadLink);
+  var iframe = document.createElement("iframe");
+  iframe.src = downloadLink.href;
+  iframe.style.display = "none";
+  document.body.appendChild(iframe);
   
 };
